@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Resize Javascript</title>
+	<style>
+		#resize{
+			height: 300px;
+			width: 300px;
+			background: #9b59b6;
+			position: absolute;
+			top: 200px;
+			left: 300px;
+			user-select: none;
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<div id="resize"></div>
+	</div>
+
+<script src="resize.js"></script>
+<script>
+	makeResizable('resize', {
+		triggerMargin : 20
+		// min : {height : 100, width : 100},
+		// max : {height : 500, width : 500}
+	});
+</script>
+</body>
+</html>
