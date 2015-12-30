@@ -21,54 +21,63 @@ var makeResizable = function(id, settings){
 		thisHoverState = state;
 		document.body.style.cursor = "ew-resize";
 	};
+	var moveThrottle = 0;
 	var checkState = function(e){
-		if(e.pageY <= triggers.top) mouseVertical('top');
-		else if(e.pageY >= triggers.bottom) mouseVertical('bottom');
-		else if(e.pageX >= triggers.right) mouseHorizontal('right');
-		else if(e.pageX <= triggers.left) mouseHorizontal('left');
-		else document.body.style.cursor = "default";
+		moveThrottle++;
+		if(!(moveThrottle % 5) || moveThrottle == 1){
+			if(e.pageY <= triggers.top) mouseVertical('top');
+			else if(e.pageY >= triggers.bottom) mouseVertical('bottom');
+			else if(e.pageX >= triggers.right) mouseHorizontal('right');
+			else if(e.pageX <= triggers.left) mouseHorizontal('left');
+			else document.body.style.cursor = "default";
+		}
 	}
 
 	ele.addEventListener('mousemove', checkState, false);
 
 	// Dragstart
 	ele.addEventListener('mousedown', function(evtDown){
+		moveThrottle = 0;
 		var startPos = {top : evtDown.pageY, left : evtDown.pageX};
 		ele.removeEventListener('mousemove', checkState, false);
 
+		var dragMoveThrottle = 0;
 		function _funcMouseMoveHook(evtMove){
-			switch(thisHoverState){
-				case 'right':
-					var thisWidth = rect.width + (evtMove.pageX - startPos.left);
-					// if(thisWidth <= settings.max.width && thisWidth >= settings.min.width)
-					ele.style.width = thisWidth+"px";
-					// else ele.style.width = ele.width-1+"px";
-				break;
+			dragMoveThrottle++;
+			if(!(dragMoveThrottle % 2) || dragMoveThrottle == 1){
+				switch(thisHoverState){
+					case 'right':
+						var thisWidth = rect.width + (evtMove.pageX - startPos.left);
+						// if(thisWidth <= settings.max.width && thisWidth >= settings.min.width)
+						ele.style.width = thisWidth+"px";
+						// else ele.style.width = ele.width-1+"px";
+					break;
 
-				case 'bottom':
-					var thisHeight = rect.height + (evtMove.pageY - startPos.top);
-					// if(thisHeight <= settings.max.height && thisHeight >= settings.min.height)
-					ele.style.height = thisHeight+"px";
-					// else ele.style.height = ele.height-1+"px";
-				break;
+					case 'bottom':
+						var thisHeight = rect.height + (evtMove.pageY - startPos.top);
+						// if(thisHeight <= settings.max.height && thisHeight >= settings.min.height)
+						ele.style.height = thisHeight+"px";
+						// else ele.style.height = ele.height-1+"px";
+					break;
 
-				case 'top':
-					// var thisHeight = rect.height + (evtMove.pageY - startPos.top);
-					// if(thisHeight <= settings.max.height && thisHeight >= settings.min.height){
-					ele.style.top = rect.top - (startPos.top - evtMove.pageY)+"px";
-					ele.style.height = rect.height + (startPos.top - evtMove.pageY)+"px";
-					// }
-					// else ele.style.height = ele.height-1+"px";
-				break;
+					case 'top':
+						// var thisHeight = rect.height + (evtMove.pageY - startPos.top);
+						// if(thisHeight <= settings.max.height && thisHeight >= settings.min.height){
+						ele.style.top = rect.top - (startPos.top - evtMove.pageY)+"px";
+						ele.style.height = rect.height + (startPos.top - evtMove.pageY)+"px";
+						// }
+						// else ele.style.height = ele.height-1+"px";
+					break;
 
-				case 'left':
-					// var thisWidth = rect.width + (evtMove.pageX - startPos.left);
-					// if(thisWidth <= settings.max.width && thisWidth >= settings.min.width){
-					ele.style.left = rect.left - (startPos.left - evtMove.pageX)+"px";
-					ele.style.width = rect.width + (startPos.left - evtMove.pageX)+"px";
-					// }
-					// else ele.style.width = ele.width-1+"px";
-				break;
+					case 'left':
+						// var thisWidth = rect.width + (evtMove.pageX - startPos.left);
+						// if(thisWidth <= settings.max.width && thisWidth >= settings.min.width){
+						ele.style.left = rect.left - (startPos.left - evtMove.pageX)+"px";
+						ele.style.width = rect.width + (startPos.left - evtMove.pageX)+"px";
+						// }
+						// else ele.style.width = ele.width-1+"px";
+					break;
+				}
 			}
 		}
 		window.addEventListener('mousemove', _funcMouseMoveHook, false);
