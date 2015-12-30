@@ -12,7 +12,7 @@ makeResizable('resize', {
 
 ### Additions to future updates
 
-Give the option to set a maximum and/or minimum width.
-Restrict left, top, bottom or right resizing
+- Give the option to set a maximum and/or minimum width and height
+- Restrict left, top, bottom or right resizing
 
-Keep in mind that resizing in 4 ways enables users to move divs around the page.
+Keep in mind that resizing left, top, bottom and right enables users to move divs around the page.
