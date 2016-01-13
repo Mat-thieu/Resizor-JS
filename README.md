@@ -1,6 +1,6 @@
 # Resizor
 
-Resize elements left, top, bottom and right.
+Resize elements on all corners and edges.
 
 
 ### Make an element resizable
@@ -13,6 +13,6 @@ makeResizable('resize', {
 ### Additions to future updates
 
 - Give the option to set a maximum and/or minimum width and height
-- Restrict left, top, bottom or right resizing
+- Restrict some types resizing (e.g. only allow left and bottom)
 
-Keep in mind that resizing left, top, bottom and right enables users to move divs around the page.
+Keep in mind that resizing in all directions allows a user to move an element across the page.
