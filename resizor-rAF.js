@@ -40,76 +40,83 @@ var makeResizable = function(id, settings){
 	ele.addEventListener('mousedown', function(evtDown){
 		moveThrottle = 0;
 		var startPos = {top : evtDown.pageY, left : evtDown.pageX};
-		var animationLoop;
+		var mouse = {y :startPos.top, x : startPos.left};
 		ele.removeEventListener('mousemove', setMouseState, false);
 
-		var dragMoveThrottle = 0;
-		function _funcMouseMoveHook(evtMove){
-			dragMoveThrottle++;
-			if(!(dragMoveThrottle % 2) || dragMoveThrottle == 1){
-				switch(thisHoverState){
-					case 'right':
-						var thisWidth = rect.width + (evtMove.pageX - startPos.left);
-						ele.style.width = thisWidth+"px";
-					break;
-
-					case 'bottom':
-						var thisHeight = rect.height + (evtMove.pageY - startPos.top);
-						ele.style.height = thisHeight+"px";
-					break;
-
-					case 'top':
-						ele.style.top = rect.top - (startPos.top - evtMove.pageY)+"px";
-						ele.style.height = rect.height + (startPos.top - evtMove.pageY)+"px";
-					break;
-
-					case 'left':
-						ele.style.left = rect.left - (startPos.left - evtMove.pageX)+"px";
-						ele.style.width = rect.width + (startPos.left - evtMove.pageX)+"px";
-					break;
-
-					case 'right-bottom':
-						// right
-						var thisWidth = rect.width + (evtMove.pageX - startPos.left);
-						ele.style.width = thisWidth+"px";
-						// bottom
-						var thisHeight = rect.height + (evtMove.pageY - startPos.top);
-						ele.style.height = thisHeight+"px";
-					break;
-
-					case 'right-top':
-						// right
-						var thisWidth = rect.width + (evtMove.pageX - startPos.left);
-						ele.style.width = thisWidth+"px";
-						// top
-						ele.style.top = rect.top - (startPos.top - evtMove.pageY)+"px";
-						ele.style.height = rect.height + (startPos.top - evtMove.pageY)+"px";
-					break;
-
-					case 'left-top':
-						// left
-						ele.style.left = rect.left - (startPos.left - evtMove.pageX)+"px";
-						ele.style.width = rect.width + (startPos.left - evtMove.pageX)+"px";
-						// top
-						ele.style.top = rect.top - (startPos.top - evtMove.pageY)+"px";
-						ele.style.height = rect.height + (startPos.top - evtMove.pageY)+"px";
-					break;
-
-					case 'left-bottom':
-						// left
-						ele.style.left = rect.left - (startPos.left - evtMove.pageX)+"px";
-						ele.style.width = rect.width + (startPos.left - evtMove.pageX)+"px";
-						// bottom
-						var thisHeight = rect.height + (evtMove.pageY - startPos.top);
-						ele.style.height = thisHeight+"px";
-					break;
-				}
-			}
+		var _funcMouseMoveHook = function(evtMove){
+			mouse.x = evtMove.pageX;
+			mouse.y = evtMove.pageY;
 		}
 
-		if(thisHoverState) window.addEventListener('mousemove', _funcMouseMoveHook, false);
+		var setDimensions = function(){
+			switch(thisHoverState){
+				case 'right':
+					var thisWidth = rect.width + (mouse.x - startPos.left);
+					ele.style.width = thisWidth+"px";
+				break;
+
+				case 'bottom':
+					var thisHeight = rect.height + (mouse.y - startPos.top);
+					ele.style.height = thisHeight+"px";
+				break;
+
+				case 'top':
+					ele.style.top = rect.top - (startPos.top - mouse.y)+"px";
+					ele.style.height = rect.height + (startPos.top - mouse.y)+"px";
+				break;
+
+				case 'left':
+					ele.style.left = rect.left - (startPos.left - mouse.x)+"px";
+					ele.style.width = rect.width + (startPos.left - mouse.x)+"px";
+				break;
+
+				case 'right-bottom':
+					// right
+					var thisWidth = rect.width + (mouse.x - startPos.left);
+					ele.style.width = thisWidth+"px";
+					// bottom
+					var thisHeight = rect.height + (mouse.y - startPos.top);
+					ele.style.height = thisHeight+"px";
+				break;
+
+				case 'right-top':
+					// right
+					var thisWidth = rect.width + (mouse.x - startPos.left);
+					ele.style.width = thisWidth+"px";
+					// top
+					ele.style.top = rect.top - (startPos.top - mouse.y)+"px";
+					ele.style.height = rect.height + (startPos.top - mouse.y)+"px";
+				break;
+
+				case 'left-top':
+					// left
+					ele.style.left = rect.left - (startPos.left - mouse.x)+"px";
+					ele.style.width = rect.width + (startPos.left - mouse.x)+"px";
+					// top
+					ele.style.top = rect.top - (startPos.top - mouse.y)+"px";
+					ele.style.height = rect.height + (startPos.top - mouse.y)+"px";
+				break;
+
+				case 'left-bottom':
+					// left
+					ele.style.left = rect.left - (startPos.left - mouse.x)+"px";
+					ele.style.width = rect.width + (startPos.left - mouse.x)+"px";
+					// bottom
+					var thisHeight = rect.height + (mouse.y - startPos.top);
+					ele.style.height = thisHeight+"px";
+				break;
+			}
+
+			animationLoop = requestAnimationFrame(setDimensions);
+		}
+
+		if(thisHoverState){
+			window.addEventListener('mousemove', _funcMouseMoveHook, false);
+			setDimensions();
+		}
 
 		window.addEventListener('mouseup', function _funcMouseUpHook(){
+			window.cancelAnimationFrame(animationLoop);
 			window.removeEventListener('mousemove', _funcMouseMoveHook, false);
 			window.removeEventListener('mouseup', _funcMouseUpHook, false);
 			ele.addEventListener('mousemove', setMouseState, false);
